@@ -45,14 +45,15 @@
 (defn access-token-url
   [credentials]
   (let [default-params {:response_type "code"}
-        params (underscore-keys (merge (default-params credentials)))
+        params (underscore-keys (merge default-params credentials))
         params (dissoc params :client_secret :client_ips)]
     (str "https://instagram.com/oauth/authorize" "?" (client/generate-query-string params))))
 
 (defn get-access-token
-  [credentials]
-  (let [default-params {:grant_type "authorization_code"}
-        params (underscore-keys (merge (default-params credentials)))
+  [credentials code]
+  (let [params {:grant_type "authorization_code"}
+        params (assoc params :code code)
+        params (underscore-keys (merge (params credentials)))
         response (client/post "https://instagram.com/oauth/access_token" {:form-params params})]
     (get-in response [:body :data])))
 
