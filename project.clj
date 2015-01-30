@@ -1,4 +1,4 @@
-(defproject clojuregram "0.1.1"
+(defproject clojuregram "0.1.2"
   :description "Simple Clojure instagram API wrapper"
   :url "https://github.com/enriclluelles/clojuregram"
   :license {:name "Eclipse Public License"
