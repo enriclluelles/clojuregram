@@ -53,9 +53,9 @@
   [credentials code]
   (let [params {:grant_type "authorization_code"}
         params (assoc params :code code)
-        params (underscore-keys (merge (params credentials)))
-        response (client/post "https://instagram.com/oauth/access_token" {:form-params params})]
-    (get-in response [:body :data])))
+        params (underscore-keys (merge params credentials))
+        response (client/post "https://instagram.com/oauth/access_token" {:form-params params :as :json})]
+    (response :body)))
 
 (defn- get-full-args
   [args]
@@ -95,10 +95,11 @@
        [call-args#]
        (let [args# (merge ~default-args call-args#)
              args# (get-full-args args#)
-             [uri# query-args#] (subs-uri (str "https://api.instagram.com/v1/" ~path) args#)]
-         (client/request (assoc {:url uri# :method ~method :as :json}
-                                ~key-for-merge query-args#
-                                :headers (extra-headers)))))))
+             [uri# query-args#] (subs-uri (str "https://api.instagram.com/v1/" ~path) args#)
+             payload# (client/request (assoc {:url uri# :method ~method :as :json}
+                                             ~key-for-merge query-args#
+                                             :headers (extra-headers)))]
+         payload#))))
 
 ; User Endpoints
 (def-instagram-endpoint get-user :get "users/{:user_id}")
